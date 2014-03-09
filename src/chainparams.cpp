@@ -9,6 +9,7 @@
 #include "core.h"
 #include "protocol.h"
 #include "util.h"
+#include "main.h"
 
 #include <boost/assign/list_of.hpp>
 
@@ -41,17 +42,12 @@ public:
 
         // Build the genesis block. Note that the output of the genesis coinbase cannot
         // be spent as it did not originally exist in the database.
-        //
-        // CBlock(hash=000000000019d6, ver=1, hashPrevBlock=00000000000000, hashMerkleRoot=4a5e1e, nTime=1231006505, nBits=1e00ffff, nNonce=2083236893, vtx=1)
-        //   CTransaction(hash=4a5e1e, ver=1, vin.size=1, vout.size=1, nLockTime=0)
-        //     CTxIn(COutPoint(000000, -1), coinbase 04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73)
-        //     CTxOut(nValue=50.00000000, scriptPubKey=0x5F1DF16B2B704C8A578D0B)
-        //   vMerkleTree: 4a5e1e
         const char* pszTimestamp = "BBC 06/Mar/2014 Crimea parliament asks to join Russia";
         CTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
-        txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+
+        txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(439075) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
         txNew.vout[0].nValue = 50 * COIN;
         txNew.vout[0].scriptPubKey = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
         genesis.vtx.push_back(txNew);
@@ -60,25 +56,13 @@ public:
         genesis.nVersion = 1;
         genesis.nTime    = 1394140731;
         genesis.nBits    = 0x1e00ffff;
-	genesis.nNonce   = 1658676;
+        genesis.nNonce   = 2251341579;	
 
-/*	for(unsigned int i=0; i < 1<<31; i++)
-	{
-	        genesis.nNonce   = i;
-	        hashGenesisBlock = genesis.GetHash();
-	        CBigNum bnTarget;
-    		bnTarget.SetCompact(genesis.nBits);
+	    hashGenesisBlock = genesis.GetHash();
 
-		if (hashGenesisBlock <= bnTarget.getuint256())
-		    break;
-	}
-	cout << "nNonce: " << genesis.nNonce << " hash: " << hashGenesisBlock.GetHex() << " merkle: " << genesis.hashMerkleRoot.GetHex() << "\n";*/
-
-
-        hashGenesisBlock = genesis.GetHash();
-
-        assert(hashGenesisBlock == uint256("0x000000d6a9e7f59584b4f3a74522d3bed73c416d90a9f4a52e067a5ca4c0de17"));
-        assert(genesis.hashMerkleRoot == uint256("0x7ac5b92e35848f6be37e1d9ae326811f5cc968f5889282a00bd9454eaa3f28d6"));
+        assert(hashGenesisBlock == uint256("0x0000008235a18ea717547d42f605273215b4dc4bc19a40f8a74d55f954aea2fc"));
+        assert(genesis.hashMerkleRoot == uint256("0x3cd43d7a288c03796b911945500726b3144a076de226231ea325263b10bfb4b1"));
+        assert(CheckNonce(genesis.nNonce) == true);
 
         base58Prefixes[PUBKEY_ADDRESS] = list_of(0);
         base58Prefixes[SCRIPT_ADDRESS] = list_of(5);
@@ -135,14 +119,18 @@ public:
 
         // Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1394140731;
-        genesis.nNonce = 1658676;
+        genesis.nNonce = 2251341579;
+
+        const char* pszTimestamp = "BBC 06/Mar/2014 Crimea parliament asks to join Russia";
+        CTransaction txNew = genesis.vtx.back();        
+        txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(439075) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("0x000000d6a9e7f59584b4f3a74522d3bed73c416d90a9f4a52e067a5ca4c0de17"));
+        assert(hashGenesisBlock == uint256("0x0000008235a18ea717547d42f605273215b4dc4bc19a40f8a74d55f954aea2fc"));
+        assert(CheckNonce(genesis.nNonce) == true);
 
         vFixedSeeds.clear();
-        vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("bitcoin.petertodd.org", "testnet-seed.bitcoin.petertodd.org"));
-        vSeeds.push_back(CDNSSeedData("bluematt.me", "testnet-seed.bluematt.me"));
+        vSeeds.clear();        
 
         base58Prefixes[PUBKEY_ADDRESS] = list_of(111);
         base58Prefixes[SCRIPT_ADDRESS] = list_of(196);
@@ -169,12 +157,12 @@ public:
         bnProofOfWorkLimit = CBigNum(~uint256(0) >> 1);
         genesis.nTime = 1394140731;
         genesis.nBits = 0x207fffff;
-        genesis.nNonce = 2;
+        genesis.nNonce = 2251341579;
         hashGenesisBlock = genesis.GetHash();
         nDefaultPort = 18444;
         strDataDir = "regtest";
 
-        assert(hashGenesisBlock == uint256("0x66ee829dc16e50208127b751c614f02e345870509b62852620c7ada7d33729a5"));
+        assert(hashGenesisBlock == uint256("0x60674f629bd1256cfdf38da6377cef1ebd958aa366e3e3f5a2e1ee404a62b3b9"));
 
         vSeeds.clear();  // Regtest mode doesn't have any DNS seeds.
     }

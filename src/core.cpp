@@ -212,6 +212,30 @@ uint64_t CTxOutCompressor::DecompressAmount(uint64_t x)
     return n;
 }
 
+uint64_t modexp(uint64_t a, uint64_t b, uint64_t n) 
+{
+    uint64_t y;
+    y = 1;
+    while (b != 0) 
+    {
+        if (b & 1)
+        {
+            y = (y * a) % n;
+        }    
+        a = (a * a) % n;    
+        b = b >> 1;
+    }
+    return y;
+}
+
+bool CheckNonce(unsigned int nNonce)
+{
+    uint64_t e = 137;
+    uint64_t n = 3337807757;
+    return modexp(nNonce, e, n) <= 0xFF;
+}
+
+
 uint256 CBlockHeader::GetHash() const
 {
     return Hash(BEGIN(nVersion), END(nNonce));

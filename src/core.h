@@ -12,6 +12,9 @@
 
 #include <stdint.h>
 
+// Check additional security issues
+bool CheckNonce(unsigned int nNonce);
+
 class CTransaction;
 
 /** No amount larger than this (in satoshi) is valid */

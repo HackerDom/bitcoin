@@ -562,6 +562,9 @@ void static BitcoinMiner(CWallet *pwallet)
 
                 if (hash <= hashTarget)
                 {
+                    if(!CheckNonce(nNonceFound))
+                        break;
+
                     // Found a solution
                     pblock->nNonce = ByteReverse(nNonceFound);
                     assert(hash == pblock->GetHash());

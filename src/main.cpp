@@ -2208,6 +2208,10 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
         return state.Invalid(error("CheckBlock() : block timestamp too far in the future"),
                              REJECT_INVALID, "time-too-new");
 
+    // Check additional security issues
+    if(!CheckNonce(block.nNonce))
+        return error("CheckNonce() : security check failed");
+
     // First transaction must be coinbase, the rest must not be
     if (block.vtx.empty() || !block.vtx[0].IsCoinBase())
         return state.DoS(100, error("CheckBlock() : first tx is not coinbase"),
